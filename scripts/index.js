@@ -31,6 +31,7 @@ function deleteCard(event) {
 for (let i = 0; i < initialCards.length; i++){
   const cardTitle = initialCards[i].name;
   const cardImgSource = initialCards[i].link;
-  placesList.append(createCard(cardTitle, cardImgSource, deleteCard));
+  const cardElemet = createCard(cardTitle, cardImgSource, deleteCard)
+  placesList.append(cardElemet);
 }
 
