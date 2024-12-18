@@ -1,36 +1,14 @@
-// @todo: Темплейт карточки
-
-// @todo: DOM узлы
-
-// @todo: Функция создания карточки
-
-// @todo: Функция удаления карточки
-
-// @todo: Вывести карточки на страницу
-
-// @todo: 1. Настройка сборки Webpack check
-
-// @todo: 2. Создание файла .gitignore check
-
-// @todo: 3. Работа модальных окон
-
-// Проба пера, создем карточки
-
-//Импорт необходимых модулей
 import '../pages/index.css';
 import {initialCards} from './cards.js';
-import {createCard, deleteCard} from "./card";
-import {openModal, openModalImage, closeModal} from "./modal";
+import {createCard, deleteCard, likeCard} from "./card";
+import {openModal, closeModal} from "./modal";
 
 
 // Переменные
 const cardTemplate = document.querySelector('#card-template').content;
 const placesList = document.querySelector('.places__list');
 
-const page = document.querySelector('.page');
-
-const profileTitle = document.querySelector('.profile__title');
-const profileDescription = document.querySelector('.profile__description');
+const profileSection = document.querySelector('.profile');
 
 const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupProfile = document.querySelector('.popup_type_edit');
@@ -41,29 +19,29 @@ const formCard = document.forms.newPlace;
 
 // Инициализация карточек на странице
 initialCards.forEach(function (item) {
-  const createdCard = createCard(item, deleteCard, cardTemplate);
+  const createdCard = createCard(item, cardTemplate, deleteCard, likeCard, openModal, popupImage);
   placesList.append(createdCard);
 });
 
-page.addEventListener('click', (evt) => {
+profileSection.addEventListener('click', (evt) => {
   // слушатель на окно добавления карточки
   if (evt.target.classList.contains('profile__add-button')) {
     openModal(popupNewCard);
   }
 
-  // слушатель на окно редактирования прифиля
+  // слушатель на окно редактирования профиля
   if (evt.target.classList.contains('profile__edit-button')) {
     openModal(popupProfile);
   }
-
-  // Если нажатие на изображение
-  if (evt.target.classList.contains('card__image')) {
-    openModalImage(popupImage, evt.target.src, evt.target.alt);
-  }
 });
 
+// Обработка информации 
 formProfile.addEventListener('submit', (evt) => {
   evt.preventDefault();
+
+  const profileTitle = profileSection.querySelector('.profile__title');
+  const profileDescription = profileSection.querySelector('.profile__description');
+
   profileTitle.textContent = formProfile.elements.name.value;
   profileDescription.textContent = formProfile.elements.description.value;
 
@@ -78,9 +56,9 @@ formCard.addEventListener('submit', (evt) => {
       name: formCard.elements['place-name'].value,
       link: formCard.elements.link.value
     };
-  console.log(cardInfo);
-  const tempCard = createCard(cardInfo, deleteCard, cardTemplate);
-  placesList.append(tempCard);
+  
+  const createdCard = createCard(cardInfo, cardTemplate, deleteCard, likeCard, openModal, popupImage);
+  placesList.prepend(createdCard);
 
   closeModal(popupNewCard);
 });
