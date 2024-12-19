@@ -14,12 +14,31 @@ const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupProfile = document.querySelector('.popup_type_edit');
 const popupImage =  document.querySelector('.popup_type_image');
 
+const ProfileTitle = document.querySelector('.profile__title');
+const ProfileDescription = document.querySelector('.profile__description');
+
 const formProfile = document.forms.editProfile;
 const formCard = document.forms.newPlace;
 
+function setImageAttr(imgSrc, imgAlt, imagePopup, paragraphPopup) {
+  imagePopup.src = imgSrc;
+  imagePopup.alt = imgAlt;
+  paragraphPopup.textContent = imgAlt;
+}
+
+function getProfileInfo(form, Title, Description) {
+  form.elements.name.value = Title.textContent;
+  form.elements.description.value = Description.textContent;
+}
+
+function setProfileInfo(form, Title, Description) {
+  Title.textContent = form.elements.name.value;
+  Description.textContent = form.elements.description.value;
+}
+
 // Инициализация карточек на странице
 initialCards.forEach(function (item) {
-  const createdCard = createCard(item, cardTemplate, deleteCard, likeCard, openModal, popupImage);
+  const createdCard = createCard(item, cardTemplate, deleteCard, likeCard, openModal, popupImage, setImageAttr);
   placesList.append(createdCard);
 });
 
@@ -31,6 +50,7 @@ profileSection.addEventListener('click', (evt) => {
 
   // слушатель на окно редактирования профиля
   if (evt.target.classList.contains('profile__edit-button')) {
+    getProfileInfo(formProfile, ProfileTitle, ProfileDescription);
     openModal(popupProfile);
   }
 });
@@ -38,13 +58,7 @@ profileSection.addEventListener('click', (evt) => {
 // Обработка информации 
 formProfile.addEventListener('submit', (evt) => {
   evt.preventDefault();
-
-  const profileTitle = profileSection.querySelector('.profile__title');
-  const profileDescription = profileSection.querySelector('.profile__description');
-
-  profileTitle.textContent = formProfile.elements.name.value;
-  profileDescription.textContent = formProfile.elements.description.value;
-
+  setProfileInfo(formProfile, ProfileTitle, ProfileDescription)
   closeModal(popupProfile);
 });
 
@@ -57,8 +71,9 @@ formCard.addEventListener('submit', (evt) => {
       link: formCard.elements.link.value
     };
   
-  const createdCard = createCard(cardInfo, cardTemplate, deleteCard, likeCard, openModal, popupImage);
+  const createdCard = createCard(cardInfo, cardTemplate, deleteCard, likeCard, openModal, popupImage, setImageAttr);
   placesList.prepend(createdCard);
 
   closeModal(popupNewCard);
+  evt.target.reset();
 });

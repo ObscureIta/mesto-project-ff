@@ -1,3 +1,6 @@
+const imagePopup = document.querySelector('.popup__image');
+const paragraphPopup = document.querySelector('.popup__caption');
+
 // Функция создания карточек
 export function createCard(
   imageAttr, 
@@ -5,8 +8,10 @@ export function createCard(
   deleteCardCallback, 
   likeCardCallback,
   openCardCallback,
-  modalWindow
+  modalWindow,
+  setImageAttr,
 ) {
+  
   // Копируем template
   const cardElement = cardTemplate.querySelector('.places__item.card').cloneNode(true);
   // Достаем изменяемые значения
@@ -20,12 +25,14 @@ export function createCard(
   cardImage.src = imageAttr.link;
   cardImage.alt = imageAttr.name;
 
-  const modalImage = setImageAttr(modalWindow, cardImage.src, cardImage.alt);
-
   // Навешиваем слушатели
   deleteButton.addEventListener('click', () => deleteCardCallback(cardElement));
   likeButton.addEventListener('click', () => likeCardCallback(cardElement));
-  cardImage.addEventListener('click', () => openCardCallback(modalImage))
+  cardImage.addEventListener('click', () => {
+    // Смена информации только уже при соытии открытия popup
+    setImageAttr(cardImage.src, cardImage.alt, imagePopup, paragraphPopup);
+    openCardCallback(modalWindow);
+  })
 
   return cardElement
 }
@@ -40,13 +47,3 @@ export function likeCard(cardElement) {
   likeButton.classList.toggle('card__like-button_is-active');
 }
 
-function setImageAttr(modalWindow, imgSrc, imgAlt) {
-  const image = modalWindow.querySelector('.popup__image');
-  const paragraph = modalWindow.querySelector('.popup__caption');
-
-  image.src = imgSrc;
-  image.alt = imgAlt;
-  paragraph.textContent = imgAlt;
-
-  return modalWindow
-}
