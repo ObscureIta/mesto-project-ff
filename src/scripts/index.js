@@ -1,7 +1,7 @@
 import '../pages/index.css';
 import {initialCards} from './cards.js';
-import {createCard, deleteCard, likeCard} from "./card";
-import {openModal, closeModal} from "./modal";
+import {createCard, deleteCard, likeCard} from "./card.js";
+import {openModal, closeModal} from "./modal.js";
 
 
 // Переменные
@@ -14,8 +14,8 @@ const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupProfile = document.querySelector('.popup_type_edit');
 const popupImage =  document.querySelector('.popup_type_image');
 
-const ProfileTitle = document.querySelector('.profile__title');
-const ProfileDescription = document.querySelector('.profile__description');
+const profileTitle = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
 
 const formProfile = document.forms.editProfile;
 const formCard = document.forms.newPlace;
@@ -50,7 +50,7 @@ profileSection.addEventListener('click', (evt) => {
 
   // слушатель на окно редактирования профиля
   if (evt.target.classList.contains('profile__edit-button')) {
-    getProfileInfo(formProfile, ProfileTitle, ProfileDescription);
+    getProfileInfo(formProfile, profileTitle, profileDescription);
     openModal(popupProfile);
   }
 });
@@ -58,12 +58,12 @@ profileSection.addEventListener('click', (evt) => {
 // Обработка информации 
 formProfile.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  setProfileInfo(formProfile, ProfileTitle, ProfileDescription)
+  setProfileInfo(formProfile, profileTitle, profileDescription)
   closeModal(popupProfile);
 });
 
 formCard.addEventListener('submit', (evt) => {
-  evt.preventDefault();
+  evt.preventDefault();``
 
   const cardInfo =
       {
