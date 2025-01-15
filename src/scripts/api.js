@@ -34,7 +34,7 @@ export const getCards = () => {
 }
 
 export const postCard = (cardData) => {
-  return fetch(config.cardsApiUrl + '1', {
+  return fetch(config.cardsApiUrl, {
     method: 'POST',
     headers: {
       authorization: config.authorizationToken,
