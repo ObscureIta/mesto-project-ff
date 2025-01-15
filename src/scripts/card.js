@@ -3,15 +3,19 @@ const paragraphPopup = document.querySelector('.popup__caption');
 
 // Функция создания карточек
 export function createCard(
-  imageAttr, 
-  cardTemplate, 
-  deleteCardCallback, 
+  imageAttr,
+  cardTemplate,
+  deleteCardCallback,
+  deleteCardOnApi,
   likeCardCallback,
+  likeCardOnApi,
+  unlikeCardOnApi,
   openCardCallback,
   modalWindow,
   setImageAttr,
+  usrId
 ) {
-  
+
   // Копируем template
   const cardElement = cardTemplate.querySelector('.places__item.card').cloneNode(true);
   // Достаем изменяемые значения
@@ -19,20 +23,48 @@ export function createCard(
   const cardImage = cardElement.querySelector('.card__image');
   const deleteButton = cardElement.querySelector('.card__delete-button');
   const likeButton = cardElement.querySelector('.card__like-button');
+  const likeCounter = cardElement.querySelector('.card__like-counter');
 
   // Присвоить значения
   cardTitle.textContent = imageAttr.name;
   cardImage.src = imageAttr.link;
   cardImage.alt = imageAttr.name;
 
+  if (imageAttr.likes.length > 0) {
+    likeCounter.textContent = imageAttr.likes.length;
+  } else {
+    likeCounter.textContent = 0;
+  }
+
+  if (imageAttr.likes.find((item) => item._id === usrId)) {
+    likeButton.classList.add('card__like-button_is-active');
+  }
+
   // Навешиваем слушатели
-  deleteButton.addEventListener('click', () => deleteCardCallback(cardElement));
-  likeButton.addEventListener('click', () => likeCardCallback(cardElement));
+  deleteButton.addEventListener('click', () => {
+    deleteCardOnApi(imageAttr['_id']).catch((err) => console.log(err));
+    deleteCardCallback(cardElement);
+  });
+  likeButton.addEventListener('click', () => {
+    if (likeButton.classList.contains('card__like-button_is-active')) {
+      unlikeCardOnApi(imageAttr['_id']).then((res) => {
+        likeCounter.textContent = res.likes.length
+      }).catch((err) => console.log(err));
+    } else {
+      likeCardOnApi(imageAttr['_id']).then((res) => {
+        likeCounter.textContent = res.likes.length
+      }).catch((err) => console.log(err));
+    }
+    likeCardCallback(cardElement);
+  });
   cardImage.addEventListener('click', () => {
-    // Смена информации только уже при соытии открытия popup
     setImageAttr(cardImage.src, cardImage.alt, imagePopup, paragraphPopup);
     openCardCallback(modalWindow);
   })
+
+  if (imageAttr.owner && usrId !== imageAttr.owner['_id']) {
+    deleteButton.remove();
+  }
 
   return cardElement
 }
@@ -43,7 +75,5 @@ export function deleteCard(cardElement) {
 
 export function likeCard(cardElement) {
   const likeButton = cardElement.querySelector('.card__like-button');
-
   likeButton.classList.toggle('card__like-button_is-active');
 }
-

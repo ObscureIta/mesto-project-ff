@@ -1,22 +1,13 @@
 export function openModal(modalWindow) {
-  const closeButton = modalWindow.querySelector('.popup__close');
-  
-  modalWindow.classList.add('popup_is-animated');
-  setTimeout(() => {
-    modalWindow.classList.add('popup_is-opened');
-    closeButton.focus();
-  }, 1)
+  modalWindow.classList.add('popup_is-opened');
 
   modalWindow.addEventListener('click', closeByButton);
   modalWindow.addEventListener('click', closeByOverlay);
   document.addEventListener('keydown', closeByEscape);
 }
 
-export function closeModal(modalWindow){
+export function closeModal(modalWindow) {
   modalWindow.classList.remove('popup_is-opened');
-  setTimeout(() => {
-    modalWindow.classList.remove('popup_is-animated');
-  }, 600)
 
   modalWindow.removeEventListener('click', closeByButton);
   modalWindow.removeEventListener('click', closeByOverlay);
@@ -37,7 +28,7 @@ function closeByOverlay(evt) {
 }
 
 function closeByEscape(evt) {
-  if(evt.key === 'Escape'){
+  if (evt.key === 'Escape') {
     closeModal(getActiveModal())
   }
 }
