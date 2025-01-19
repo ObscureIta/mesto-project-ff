@@ -1,21 +1,5 @@
-const imagePopup = document.querySelector('.popup__image');
-const paragraphPopup = document.querySelector('.popup__caption');
-
 // Функция создания карточек
-export function createCard(
-  imageAttr,
-  cardTemplate,
-  deleteCardCallback,
-  deleteCardOnApi,
-  likeCardCallback,
-  likeCardOnApi,
-  unlikeCardOnApi,
-  openCardCallback,
-  modalWindow,
-  setImageAttr,
-  usrId
-) {
-
+export function createCard(imageAttr, cardTemplate, deleteCardCallback, deleteCardOnApi, likeCardCallback, likeCardOnApi, unlikeCardOnApi, openCardModal, usrId) {
   // Копируем template
   const cardElement = cardTemplate.querySelector('.places__item.card').cloneNode(true);
   // Достаем изменяемые значения
@@ -48,18 +32,19 @@ export function createCard(
   likeButton.addEventListener('click', () => {
     if (likeButton.classList.contains('card__like-button_is-active')) {
       unlikeCardOnApi(imageAttr['_id']).then((res) => {
+        likeCardCallback(cardElement);
         likeCounter.textContent = res.likes.length
       }).catch((err) => console.log(err));
     } else {
       likeCardOnApi(imageAttr['_id']).then((res) => {
+        likeCardCallback(cardElement);
         likeCounter.textContent = res.likes.length
       }).catch((err) => console.log(err));
     }
-    likeCardCallback(cardElement);
+    
   });
   cardImage.addEventListener('click', () => {
-    setImageAttr(cardImage.src, cardImage.alt, imagePopup, paragraphPopup);
-    openCardCallback(modalWindow);
+    openCardModal(cardImage.src, cardTitle.textContent);
   })
 
   if (imageAttr.owner && usrId !== imageAttr.owner['_id']) {

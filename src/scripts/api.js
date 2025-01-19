@@ -4,19 +4,16 @@ const config = {
   authorizationToken: 'a4804a4c-45d8-4092-9048-57f3b23bd431',
 }
 
+const checkResponse = (res) => {
+  return res.ok ? res.json() : Promise.reject(`Ошибка: ${res.status}`);
+}
+
 export const getUserData = () => {
   return fetch(config.userApiUrl, {
     headers: {
       authorization: config.authorizationToken
     }
-  })
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      return Promise.reject(`Ошибка: ${res.status} | Ошибка выгрузки профиля`);
-    }).catch((err) => console.log(err));
+  }).then((res) => checkResponse(res));
 }
 
 export const getCards = () => {
@@ -24,13 +21,7 @@ export const getCards = () => {
     headers: {
       authorization: config.authorizationToken,
     }
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status} | Ошибка выгрузки карт`);
-  }).catch((err) => console.log(err));
+  }).then((res) => checkResponse(res));
 }
 
 export const postCard = (cardData) => {
@@ -44,13 +35,7 @@ export const postCard = (cardData) => {
       name: cardData.name,
       link: cardData.link,
     })
-  }).then(res => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status} | Ошибка создания карты`);
-  })
+  }).then(res => checkResponse(res));
 }
 
 export const patchUserData = (name, about) => {
@@ -64,13 +49,7 @@ export const patchUserData = (name, about) => {
       name: name,
       about: about
     })
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status} | Ошибка обновления профиля`);
-  })
+  }).then((res) => checkResponse(res));
 }
 
 export const patchUserAvatar = (avatar) => {
@@ -83,13 +62,7 @@ export const patchUserAvatar = (avatar) => {
     body: JSON.stringify({
       avatar: avatar
     })
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status} | Ошибка обновления аватара`);
-  })
+  }).then((res) => checkResponse(res));
 }
 
 export const deleteCardOnApi = (cardId) => {
@@ -98,13 +71,7 @@ export const deleteCardOnApi = (cardId) => {
     headers: {
       authorization: config.authorizationToken
     }
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status} | Ошибка удаления карты`);
-  });
+  }).then((res) => checkResponse(res));
 }
 
 export const likeCardOnApi = (cardId) => {
@@ -113,13 +80,7 @@ export const likeCardOnApi = (cardId) => {
     headers: {
       authorization: config.authorizationToken
     }
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status} | Ошибка лайка (Like)`);
-  })
+  }).then((res) => checkResponse(res));
 }
 
 export const unlikeCardOnApi = (cardId) => {
@@ -128,11 +89,5 @@ export const unlikeCardOnApi = (cardId) => {
     headers: {
       authorization: config.authorizationToken
     }
-  }).then((res) => {
-    if (res.ok) {
-      return res.json();
-    }
-
-    return Promise.reject(`Ошибка: ${res.status} | Ошибка лайка (Unlike)`)
-  })
+  }).then((res) => checkResponse(res));
 }
