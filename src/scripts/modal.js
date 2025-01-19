@@ -8,7 +8,9 @@ export function openModal(modalWindow) {
 
 export function closeModal(modalWindow) {
   const modalForm = modalWindow.querySelector('form'); 
-  modalForm.reset();
+  if (modalForm) {
+    modalForm.reset();
+  }
 
   modalWindow.classList.remove('popup_is-opened');
 
