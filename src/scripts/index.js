@@ -18,11 +18,9 @@ const validationConfig = {
 const cardTemplate = document.querySelector('#card-template').content;
 const placesList = document.querySelector('.places__list');
 
-const profileSection = document.querySelector('.profile');
-
-const profileTitle = profileSection.querySelector('.profile__title');
-const profileDescription = profileSection.querySelector('.profile__description');
-const profileImage = profileSection.querySelector('.profile__image');
+const profileTitle = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+const profileImage = document.querySelector('.profile__image');
 
 const popupNewCard = document.querySelector('.popup_type_new-card');
 const popupProfile = document.querySelector('.popup_type_edit');
@@ -36,45 +34,34 @@ const formProfile = document.forms.editProfile;
 const formCard = document.forms.newPlace;
 const formAvatar = document.forms.editAvatar;
 
+const editButton = document.querySelector('.profile__edit-button');
+const addButton = document.querySelector('.profile__add-button');
+const avatarButton = document.querySelector('.profile__edit-avatar-button');
+
 let usrId = '';
 
-// Получение и установка информации о пользователе
-getUserData()
-  .then((usrData) => {
-    usrId = usrData['_id'];
-    setApiUserInfo(profileTitle, profileDescription, profileImage, usrData);
-  })
-  .catch((err) => console.log(err));
-
-// Получение информации и создание карточек
-getCards()
-  .then((cardsData) => initialApiCards(cardsData, usrId))
-  .catch((err) => console.log(err));
-
+// Получение и установка информации о пользователе и карточках
+getData();
+// Включение валидации
 enableValidation(validationConfig);
 
-profileSection.addEventListener('click', (evt) => {
-  // Слушатель на окно добавления карточки
-  if (evt.target.classList.contains('profile__add-button')) {
-    clearValidation(formCard, validationConfig);
-    openModal(popupNewCard);
-  }
-
-  // Слушатель на окно редактирования профиля
-  if (evt.target.classList.contains('profile__edit-button')) {
-    getProfileInfo(formProfile, profileTitle, profileDescription);
-    clearValidation(formProfile, validationConfig);
-    openModal(popupProfile);
-  }
-
-  // Слушатель на окно редактирования аватара
-  if (evt.target.classList.contains('profile__edit-avatar-button')) {
-    clearValidation(popupAvatar, validationConfig);
-    openModal(popupAvatar);
-  }
+// Слушатели
+editButton.addEventListener('click', () => {
+  clearValidation(formProfile, validationConfig);
+  setProfileInfo(formProfile, profileTitle, profileDescription);
+  openModal(popupProfile);
 });
 
-// Обработка информации
+addButton.addEventListener('click', () => {
+  clearValidation(formCard, validationConfig);
+  openModal(popupNewCard);
+});
+
+avatarButton.addEventListener('click', () => {
+  clearValidation(formAvatar, validationConfig);
+  openModal(popupAvatar);
+});
+
 // Обработка формы профиля
 formProfile.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -134,9 +121,17 @@ popupAvatar.addEventListener('submit', (evt) => {
 });
 
 // Функции
+function getData() {
+  Promise.all([getUserData(), getCards()])
+    .then(([usrData, cardsData]) => {
+      usrId = usrData['_id'];
+      setApiUserInfo(profileTitle, profileDescription, profileImage, usrData);
+      initialApiCards(cardsData, usrId);
+    })
+    .catch((err) => console.log(err))
+}
 
-
-function getProfileInfo(form, title, description) {
+function setProfileInfo(form, title, description) {
   form.elements.name.value = title.textContent;
   form.elements.description.value = description.textContent;
 }
