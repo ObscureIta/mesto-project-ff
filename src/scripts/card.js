@@ -1,5 +1,5 @@
 // Функция создания карточек
-export function createCard(imageAttr, cardTemplate, deleteCardCallback, deleteCardOnApi, likeCardCallback, likeCardOnApi, unlikeCardOnApi, openCardModal, usrId) {
+export function createCard(imageAttr, cardTemplate, deleteCardOnApi, likeCardOnApi, unlikeCardOnApi, openCardModal, usrId) {
   // Копируем template
   const cardElement = cardTemplate.querySelector('.places__item.card').cloneNode(true);
   // Достаем изменяемые значения
@@ -26,18 +26,17 @@ export function createCard(imageAttr, cardTemplate, deleteCardCallback, deleteCa
 
   // Навешиваем слушатели
   deleteButton.addEventListener('click', () => {
-    deleteCardOnApi(imageAttr['_id']).catch((err) => console.log(err));
-    deleteCardCallback(cardElement);
+    deleteCardOnApi(imageAttr['_id']).then(() => deleteCard(cardElement)).catch((err) => console.log(err));
   });
   likeButton.addEventListener('click', () => {
     if (likeButton.classList.contains('card__like-button_is-active')) {
       unlikeCardOnApi(imageAttr['_id']).then((res) => {
-        likeCardCallback(cardElement);
+        likeCard(cardElement);
         likeCounter.textContent = res.likes.length
       }).catch((err) => console.log(err));
     } else {
       likeCardOnApi(imageAttr['_id']).then((res) => {
-        likeCardCallback(cardElement);
+        likeCard(cardElement);
         likeCounter.textContent = res.likes.length
       }).catch((err) => console.log(err));
     }
@@ -54,11 +53,11 @@ export function createCard(imageAttr, cardTemplate, deleteCardCallback, deleteCa
   return cardElement
 }
 
-export function deleteCard(cardElement) {
+function deleteCard(cardElement) {
   cardElement.remove();
 }
 
-export function likeCard(cardElement) {
+function likeCard(cardElement) {
   const likeButton = cardElement.querySelector('.card__like-button');
   likeButton.classList.toggle('card__like-button_is-active');
 }

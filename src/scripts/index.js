@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import { createCard, deleteCard, likeCard } from "./card.js";
+import { createCard} from "./card.js";
 import { openModal, closeModal } from "./modal.js";
 import { enableValidation, clearValidation } from "./validation";
 import { getUserData, getCards, postCard, patchUserData, deleteCardOnApi, likeCardOnApi, unlikeCardOnApi, patchUserAvatar } from "./api.js";
@@ -94,7 +94,7 @@ formCard.addEventListener('submit', (evt) => {
       cardInfo._id = res._id;
       cardInfo.likes = res.likes;
       changeButtonStatus(formCard, false);
-      const createdCard = createCard(cardInfo, cardTemplate, deleteCard, deleteCardOnApi, likeCard, likeCardOnApi, unlikeCardOnApi, openCardModal, usrId);
+      const createdCard = createCard(cardInfo, cardTemplate, deleteCardOnApi, likeCardOnApi, unlikeCardOnApi, openCardModal, usrId);
       placesList.prepend(createdCard);
       closeModal(popupNewCard);
     })
@@ -115,7 +115,7 @@ popupAvatar.addEventListener('submit', (evt) => {
       closeModal(popupAvatar);
     })
     .catch((err) => {
-      changeButtonStatus(formCard, false, true);
+      changeButtonStatus(formAvatar, false, true);
       console.log(err);
     });
 });
@@ -139,7 +139,7 @@ function setProfileInfo(form, title, description) {
 // Функция создания карточек
 function initialApiCards(apiDataList, usrId) {
   apiDataList.forEach(item => {
-    const createdCard = createCard(item, cardTemplate, deleteCard, deleteCardOnApi, likeCard, likeCardOnApi, unlikeCardOnApi, openCardModal, usrId);
+    const createdCard = createCard(item, cardTemplate, deleteCardOnApi, likeCardOnApi, unlikeCardOnApi, openCardModal, usrId);
     placesList.append(createdCard);
   });
 }
